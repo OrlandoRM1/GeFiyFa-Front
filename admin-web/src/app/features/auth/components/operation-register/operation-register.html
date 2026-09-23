@@ -1,0 +1,148 @@
+<section class="operation-view" aria-labelledby="operation-title">
+  <div class="operation-heading">
+    <div>
+      <p class="eyebrow">Gestión diaria</p>
+      <h1 id="operation-title">Registrar operación</h1>
+      <p class="intro">Agrega una venta o compra con el detalle necesario para darle seguimiento.</p>
+    </div>
+    <button class="secondary-btn" type="button" (click)="back.emit()">Volver al dashboard</button>
+  </div>
+
+  <div class="operation-layout">
+    <form class="operation-form" [formGroup]="form" (ngSubmit)="saveOperation()" novalidate>
+      <div class="form-section">
+        <h2>Información de la operación</h2>
+        <div class="type-switch" role="group" aria-label="Tipo de operación">
+          <label [class.selected]="form.controls.type.value === 'Venta'">
+            <input type="radio" formControlName="type" value="Venta" />
+            Venta
+          </label>
+          <label [class.selected]="form.controls.type.value === 'Compra'">
+            <input type="radio" formControlName="type" value="Compra" />
+            Compra
+          </label>
+        </div>
+
+        <label class="field">
+          <span>Buscar producto en inventario <b>*</b></span>
+          <div class="product-search">
+            <input type="search" formControlName="product" placeholder="Busca por nombre o código" autocomplete="off" (input)="searchProducts($event)" aria-label="Buscar producto en inventario" />
+            @if (matchingProducts().length > 0 && !selectedProduct()) {
+              <ul class="product-results" aria-label="Resultados del inventario">
+                @for (product of matchingProducts(); track product.code) {
+                  <li>
+                    <button type="button" (click)="selectProduct(product)">
+                      <span>
+                        <strong>{{ product.name }}</strong>
+                        <small>{{ product.code }} · {{ product.stock }} disponibles</small>
+                      </span>
+                      <b>${{ product.price | number: '1.2-2' }}</b>
+                    </button>
+                  </li>
+                }
+              </ul>
+            }
+          </div>
+          @if (productSearch().trim().length >= 2 && matchingProducts().length === 0 && !selectedProduct()) {
+            <small>No encontramos coincidencias. Puedes capturar el producto manualmente.</small>
+          }
+          @if (form.controls.product.touched && form.controls.product.invalid) {
+            <small class="error">Indica el producto o servicio.</small>
+          }
+        </label>
+
+        <label class="field">
+          <span>Características <b>*</b></span>
+          <textarea formControlName="characteristics" rows="4" placeholder="Marca, modelo, presentación o notas relevantes"></textarea>
+          @if (form.controls.characteristics.touched && form.controls.characteristics.invalid) {
+            <small class="error">Agrega las características de la operación.</small>
+          }
+        </label>
+
+        <div class="field-row">
+          <label class="field">
+            <span>Precio unitario <b>*</b></span>
+            <input type="number" formControlName="price" min="0.01" step="0.01" />
+            @if (form.controls.price.touched && form.controls.price.invalid) {
+              <small class="error">Debe ser mayor que cero.</small>
+            }
+          </label>
+          <label class="field">
+            <span>Unidades <b>*</b></span>
+            <input type="number" formControlName="units" min="1" step="1" />
+            @if (form.controls.units.touched && form.controls.units.invalid) {
+              <small class="error">Indica al menos una unidad.</small>
+            }
+          </label>
+        </div>
+
+        <p class="stock-message">{{ availableStockMessage() }}</p>
+        <button class="add-product-btn" type="button" (click)="addProduct()">+ Agregar producto a la operación</button>
+
+        @if (operationLines().length > 0) {
+          <div class="cart-section">
+            <div class="cart-heading">
+              <h3>Productos de esta operación</h3>
+              <span>{{ operationLines().length }} producto(s)</span>
+            </div>
+            <ul class="cart-list">
+              @for (line of operationLines(); track $index) {
+                <li>
+                  <div>
+                    <strong>{{ line.product }}</strong>
+                    <small>{{ line.units }} x ${{ line.price | number: '1.2-2' }}</small>
+                  </div>
+                  <div class="cart-line-total">
+                    <strong>${{ line.total | number: '1.2-2' }}</strong>
+                    <button type="button" class="remove-btn" (click)="removeProduct($index)" aria-label="Quitar producto">Quitar</button>
+                  </div>
+                </li>
+              }
+            </ul>
+            <dl class="totals">
+              <div><dt>Subtotal</dt><dd>${{ subtotal() | number: '1.2-2' }}</dd></div>
+              <div><dt>IVA (16%)</dt><dd>${{ tax() | number: '1.2-2' }}</dd></div>
+              <div class="grand-total"><dt>Total de la {{ form.controls.type.value.toLowerCase() }}</dt><dd>${{ operationTotal() | number: '1.2-2' }}</dd></div>
+            </dl>
+          </div>
+        }
+
+        <label class="field">
+          <span>Evidencia <em>(opcional)</em></span>
+          <input type="file" accept="image/*,.pdf" (change)="onEvidenceSelected($event)" />
+          <small>Adjunta una imagen o PDF si necesitas respaldar el registro.</small>
+        </label>
+      </div>
+
+      <div class="form-footer">
+        @if (savedMessage()) {
+          <p class="form-message" [class.success]="form.pristine">{{ savedMessage() }}</p>
+        }
+        <button class="primary-btn" type="submit" [disabled]="operationLines().length === 0">Registrar operación completa</button>
+      </div>
+    </form>
+
+    <aside class="summary-panel" aria-label="Operaciones registradas">
+      <div class="panel-header">
+        <h2>Registros de esta sesión</h2>
+        <span class="panel-tag">{{ registeredOperations().length }}</span>
+      </div>
+      @if (registeredOperations().length === 0) {
+        <p class="empty-state">Las operaciones que registres aparecerán aquí.</p>
+      } @else {
+        <ul class="operation-list">
+          @for (operation of registeredOperations(); track $index) {
+            <li>
+              <div>
+                <span class="operation-type">{{ operation.type }}</span>
+                <strong>{{ operation.lines.length }} producto(s)</strong>
+                <small>Subtotal: ${{ operation.subtotal | number: '1.2-2' }}</small>
+              </div>
+              <strong>${{ operation.total | number: '1.2-2' }}</strong>
+            </li>
+          }
+        </ul>
+      }
+    </aside>
+  </div>
+</section>

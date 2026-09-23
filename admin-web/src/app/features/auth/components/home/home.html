@@ -1,0 +1,146 @@
+<div class="home-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+  <aside class="sidebar">
+    <div class="brand-box">
+      <img src="GeFiyFaIcon.png" alt="Optima logo" class="brand-logo" />
+      <button
+        class="sidebar-toggle"
+        type="button"
+        [attr.aria-label]="sidebarCollapsed() ? 'Expandir menú lateral' : 'Contraer menú lateral'"
+        [attr.aria-expanded]="!sidebarCollapsed()"
+        (click)="toggleSidebar()"
+      >
+        <span aria-hidden="true">{{ sidebarCollapsed() ? '›' : '‹' }}</span>
+      </button>
+    </div>
+
+    <nav class="nav-menu" aria-label="Navegación principal">
+      <button class="nav-item" [class.active]="activeSection() === 'dashboard'" (click)="showSection('dashboard')">
+        <span class="nav-icon" aria-hidden="true">⌂</span>
+        <span class="nav-label">Dashboard</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'operations'" (click)="showSection('operations')">
+        <span class="nav-icon" aria-hidden="true">↗</span>
+        <span class="nav-label">Operaciones</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'inventory'" (click)="showSection('inventory')">
+        <span class="nav-icon" aria-hidden="true">▦</span>
+        <span class="nav-label">Inventario</span>
+      </button>
+      <button class="nav-item">Clientes</button>
+      <button class="nav-item">Reportes</button>
+      <button class="nav-item">Configuración</button>
+    </nav>
+  </aside>
+
+  <main class="main-panel">
+    @if (activeSection() === 'dashboard') {
+    <header class="topbar">
+      <div>
+        <p class="eyebrow">Panel administrativo</p>
+        <h1>Resumen general</h1>
+      </div>
+      <button class="primary-btn">Nuevo registro</button>
+    </header>
+
+    <section class="stats-grid">
+      <article class="stat-card accent">
+        <span class="stat-label">Ventas</span>
+        <strong class="stat-value">$128.4K</strong>
+        <small class="stat-trend positive">+12.4% vs mes anterior</small>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Compras</span>
+        <strong class="stat-value">1,842</strong>
+        <small class="stat-trend positive">+8.1% este mes</small>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Operaciones</span>
+        <strong class="stat-value">462</strong>
+        <small class="stat-trend neutral">96% cumplidas</small>
+      </article>
+
+      <article class="stat-card">
+        <span class="stat-label">Facturas</span>
+        <strong class="stat-value">3.1%</strong>
+        <small class="stat-trend negative">-0.6% de reducción</small>
+      </article>
+    </section>
+
+    <section class="content-grid">
+      <article class="panel card-large">
+        <div class="panel-header">
+          <h2>Actividad reciente</h2>
+          <span class="panel-tag">Hoy</span>
+        </div>
+
+        <ul class="activity-list">
+          <li>
+            <div class="bullet blue"></div>
+            <div>
+              <strong>Nuevo cliente registrado</strong>
+              <small>Hace 12 minutos</small>
+            </div>
+          </li>
+          <li>
+            <div class="bullet green"></div>
+            <div>
+              <strong>Operación aprobada</strong>
+              <small>Hace 41 minutos</small>
+            </div>
+          </li>
+          <li>
+            <div class="bullet orange"></div>
+            <div>
+              <strong>Revisión pendiente</strong>
+              <small>Hace 1 hora</small>
+            </div>
+          </li>
+        </ul>
+      </article>
+
+      <article class="panel card-small">
+        <div class="panel-header">
+          <h2>Progreso</h2>
+        </div>
+
+        <div class="progress-item">
+          <label>Meta mensual</label>
+          <div class="progress-bar"><span style="width: 72%"></span></div>
+          <small>72% completado</small>
+        </div>
+
+        <div class="progress-item">
+          <label>Capacidad operativa</label>
+          <div class="progress-bar"><span style="width: 86%"></span></div>
+          <small>86% disponible</small>
+        </div>
+      </article>
+
+      <article class="panel card-small">
+        <div class="panel-header">
+          <h2>Turno actual</h2>
+        </div>
+
+        <div class="mini-card">
+          <span>Equipo de atención</span>
+          <strong>12 personas</strong>
+        </div>
+        <div class="mini-card">
+          <span>Atenciones hoy</span>
+          <strong>184</strong>
+        </div>
+        <div class="mini-card">
+          <span>Promedio</span>
+          <strong>4.8 min</strong>
+        </div>
+      </article>
+    </section>
+    } @else if (activeSection() === 'operations') {
+      <app-operation-register (back)="showSection('dashboard')" />
+    } @else {
+      <app-inventory />
+    }
+  </main>
+</div>

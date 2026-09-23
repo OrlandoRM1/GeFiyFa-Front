@@ -1,0 +1,83 @@
+<section class="inventory-view" aria-labelledby="inventory-title">
+  <header class="inventory-heading">
+    <div>
+      <p class="eyebrow">Control de existencias</p>
+      <h1 id="inventory-title">Inventario</h1>
+      <p class="intro">Administra productos para venta y materias primas para tu operación.</p>
+    </div>
+    <button class="primary-btn" type="button" (click)="toggleForm()">
+      {{ showForm() ? 'Cerrar formulario' : '+ Nuevo registro' }}
+    </button>
+  </header>
+
+  @if (message()) {
+    <p class="inventory-message" role="status">{{ message() }}</p>
+  }
+
+  @if (showForm()) {
+    <form class="inventory-form" [formGroup]="inventoryForm" (ngSubmit)="saveItem()" novalidate>
+      <div class="form-heading">
+        <div>
+          <h2>Agregar al inventario</h2>
+          <p>Registra un producto terminado o una materia prima.</p>
+        </div>
+        <span class="required-note">* Campos obligatorios</span>
+      </div>
+      <div class="form-grid">
+        <label class="field"><span>Código <b>*</b></span><input formControlName="code" placeholder="Ej. ABR-010" /></label>
+        <label class="field"><span>Nombre <b>*</b></span><input formControlName="name" placeholder="Ej. Azúcar estándar" /></label>
+        <label class="field"><span>Tipo <b>*</b></span><select formControlName="kind"><option value="Producto">Producto</option><option value="Materia prima">Materia prima</option></select></label>
+        <label class="field"><span>Categoría <b>*</b></span><input formControlName="category" placeholder="Ej. Abarrotes" /></label>
+        <label class="field"><span>Unidad de medida <b>*</b></span><select formControlName="unit"><option value="pieza">Pieza</option><option value="kg">Kilogramo</option><option value="g">Gramo</option><option value="litro">Litro</option><option value="caja">Caja</option></select></label>
+        <label class="field"><span>Existencia inicial <b>*</b></span><input type="number" formControlName="stock" min="0" step="1" /></label>
+        <label class="field"><span>Stock mínimo <b>*</b></span><input type="number" formControlName="minimumStock" min="0" step="1" /></label>
+        <label class="field"><span>Precio unitario <b>*</b></span><input type="number" formControlName="price" min="0.01" step="0.01" /></label>
+      </div>
+      <div class="form-actions">
+        <button class="secondary-btn" type="button" (click)="toggleForm()">Cancelar</button>
+        <button class="primary-btn" type="submit">Guardar registro</button>
+      </div>
+    </form>
+  }
+
+  <section class="inventory-panel" aria-label="Listado de inventario">
+    <div class="inventory-toolbar">
+      <label class="search-field">
+        <span class="sr-only">Buscar en inventario</span>
+        <input type="search" placeholder="Buscar por nombre o código" (input)="updateSearch($event)" />
+      </label>
+      <label class="filter-field">
+        <span class="sr-only">Filtrar por tipo</span>
+        <select (change)="updateKind($event)">
+          <option value="Todos">Todos los registros</option>
+          <option value="Producto">Productos</option>
+          <option value="Materia prima">Materias primas</option>
+        </select>
+      </label>
+      <div class="inventory-count"><strong>{{ filteredItems().length }}</strong> registros</div>
+      <div class="low-stock-count"><strong>{{ lowStockCount() }}</strong> por surtir</div>
+    </div>
+
+    <div class="table-wrap">
+      <table>
+        <thead>
+          <tr><th>Artículo</th><th>Tipo</th><th>Categoría</th><th>Existencia</th><th>Precio</th><th>Estado</th></tr>
+        </thead>
+        <tbody>
+          @for (item of filteredItems(); track item.code) {
+            <tr>
+              <td><strong>{{ item.name }}</strong><small>{{ item.code }}</small></td>
+              <td><span class="kind-badge">{{ item.kind }}</span></td>
+              <td>{{ item.category }}</td>
+              <td><strong>{{ item.stock }}</strong> {{ item.unit }}<small>Mínimo: {{ item.minimumStock }}</small></td>
+              <td>${{ item.price | number: '1.2-2' }}</td>
+              <td><span class="status-badge" [class.low-stock]="item.stock <= item.minimumStock">{{ item.stock <= item.minimumStock ? 'Stock bajo' : 'Disponible' }}</span></td>
+            </tr>
+          } @empty {
+            <tr><td class="empty-table" colspan="6">No hay registros que coincidan con la búsqueda.</td></tr>
+          }
+        </tbody>
+      </table>
+    </div>
+  </section>
+</section>

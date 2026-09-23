@@ -1,0 +1,48 @@
+:host { display: block; }
+
+.inventory-view { min-height: 100%; animation: reveal 0.35s ease both; }
+.inventory-heading { display: flex; align-items: flex-start; justify-content: space-between; gap: 20px; margin-bottom: 24px; }
+.inventory-heading h1 { margin: 0; color: #f8fafc; font-size: clamp(1.8rem, 2.5vw, 2.5rem); }
+.eyebrow { margin: 0 0 8px; color: #93c5fd; font-size: 11px; font-weight: 700; letter-spacing: 0.15em; text-transform: uppercase; }
+.intro { margin: 10px 0 0; color: #94a3b8; }
+.primary-btn, .secondary-btn { border-radius: 10px; padding: 11px 16px; font: inherit; font-weight: 700; cursor: pointer; }
+.primary-btn { border: none; color: #fff; background: #2563eb; }
+.secondary-btn { border: 1px solid rgba(148,163,184,.24); color: #cbd5e1; background: rgba(148,163,184,.08); }
+.inventory-message { margin: 0 0 16px; color: #86efac; font-size: 13px; }
+.inventory-form, .inventory-panel { border: 1px solid rgba(148,163,184,.14); border-radius: 20px; background: rgba(15,23,42,.75); box-shadow: 0 12px 28px rgba(15,23,42,.18); }
+.inventory-form { margin-bottom: 18px; padding: 22px; }
+.form-heading, .form-actions, .inventory-toolbar { display: flex; align-items: center; justify-content: space-between; gap: 16px; }
+.form-heading { margin-bottom: 18px; }
+.form-heading h2 { margin: 0; color: #f8fafc; font-size: 1.1rem; }
+.form-heading p { margin: 6px 0 0; color: #94a3b8; font-size: 13px; }
+.required-note { color: #94a3b8; font-size: 12px; }
+.form-grid { display: grid; grid-template-columns: repeat(4, minmax(0, 1fr)); gap: 14px; }
+.field { display: flex; flex-direction: column; gap: 7px; color: #cbd5e1; font-size: 13px; font-weight: 600; }
+.field b { color: #fca5a5; }
+.field input, .field select, .search-field input, .filter-field select { width: 100%; box-sizing: border-box; border: 1px solid rgba(148,163,184,.22); border-radius: 10px; padding: 11px 12px; color: #f8fafc; background: rgba(2,6,23,.35); font: inherit; font-weight: 400; }
+.field input:focus, .field select:focus, .search-field input:focus, .filter-field select:focus { outline: 2px solid #60a5fa; outline-offset: 1px; }
+.form-actions { justify-content: flex-end; margin-top: 20px; }
+.inventory-panel { overflow: hidden; }
+.inventory-toolbar { flex-wrap: wrap; padding: 16px 18px; border-bottom: 1px solid rgba(148,163,184,.12); }
+.search-field { flex: 1 1 240px; }
+.filter-field { flex: 0 1 190px; }
+.inventory-count, .low-stock-count { color: #94a3b8; font-size: 12px; }
+.inventory-count strong { color: #bfdbfe; font-size: 1rem; }
+.low-stock-count strong { color: #fbbf24; font-size: 1rem; }
+.table-wrap { overflow-x: auto; }
+table { width: 100%; border-collapse: collapse; min-width: 700px; }
+th { color: #94a3b8; font-size: 11px; font-weight: 700; letter-spacing: .08em; text-align: left; text-transform: uppercase; }
+th, td { padding: 14px 18px; border-bottom: 1px solid rgba(148,163,184,.1); }
+td { color: #cbd5e1; font-size: 13px; }
+td strong, td small { display: block; }
+td strong { color: #f8fafc; }
+td small { margin-top: 4px; color: #94a3b8; font-size: 11px; }
+.kind-badge, .status-badge { display: inline-block; border-radius: 999px; padding: 5px 8px; font-size: 11px; font-weight: 700; }
+.kind-badge { color: #bfdbfe; background: rgba(59,130,246,.14); }
+.status-badge { color: #86efac; background: rgba(34,197,94,.12); }
+.status-badge.low-stock { color: #fbbf24; background: rgba(245,158,11,.14); }
+.empty-table { padding: 34px; color: #94a3b8; text-align: center; }
+.sr-only { position: absolute; width: 1px; height: 1px; padding: 0; margin: -1px; overflow: hidden; clip: rect(0,0,0,0); white-space: nowrap; border: 0; }
+@keyframes reveal { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: translateY(0); } }
+@media (max-width: 900px) { .form-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); } }
+@media (max-width: 560px) { .inventory-heading, .form-heading { flex-direction: column; align-items: stretch; } .form-grid { grid-template-columns: 1fr; } .form-actions { align-items: stretch; flex-direction: column-reverse; } }
