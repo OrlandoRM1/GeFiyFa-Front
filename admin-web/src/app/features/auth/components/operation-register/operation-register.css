@@ -110,6 +110,7 @@
 }
 
 .field input,
+.field select,
 .field textarea {
   width: 100%;
   box-sizing: border-box;
@@ -122,11 +123,26 @@
   font-weight: 400;
 }
 
+.field select {
+  appearance: none;
+  background-image: linear-gradient(45deg, transparent 50%, #93c5fd 50%), linear-gradient(135deg, #93c5fd 50%, transparent 50%);
+  background-position: calc(100% - 16px) 50%, calc(100% - 11px) 50%;
+  background-repeat: no-repeat;
+  background-size: 5px 5px, 5px 5px;
+  cursor: pointer;
+}
+
+.field select option {
+  color: #e2e8f0;
+  background: #17263d;
+}
+
 .field textarea {
   resize: vertical;
 }
 
 .field input:focus,
+.field select:focus,
 .field textarea:focus {
   outline: 2px solid #60a5fa;
   outline-offset: 1px;
@@ -134,6 +150,15 @@
 
 .product-search {
   position: relative;
+}
+
+.product-fields {
+  margin-bottom: 0;
+}
+
+.product-results-wrapper {
+  position: relative;
+  z-index: 2;
 }
 
 .product-results {
@@ -185,6 +210,78 @@
 
 .field input[type='file'] {
   padding: 9px;
+}
+
+.evidence-picker {
+  display: grid;
+  grid-template-columns: repeat(2, minmax(0, 1fr));
+  gap: 10px;
+}
+
+.evidence-option {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  border: 1px dashed rgba(96, 165, 250, 0.5);
+  border-radius: 10px;
+  padding: 10px;
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.08);
+  font-size: 12px;
+  font-weight: 700;
+}
+
+.evidence-option input {
+  width: 100%;
+  padding: 7px;
+  font-size: 11px;
+}
+
+.evidence-camera-button {
+  border: 1px dashed rgba(96, 165, 250, 0.5);
+  color: #bfdbfe;
+  background: rgba(37, 99, 235, 0.08);
+  font: inherit;
+  font-size: 12px;
+  font-weight: 700;
+  cursor: pointer;
+}
+
+.camera-panel {
+  margin-top: 12px;
+  border: 1px solid rgba(96, 165, 250, 0.35);
+  border-radius: 12px;
+  padding: 10px;
+  background: #020617;
+}
+
+.camera-panel video {
+  display: block;
+  width: 100%;
+  max-height: 280px;
+  border-radius: 8px;
+  object-fit: cover;
+}
+
+.camera-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 8px;
+  margin-top: 10px;
+}
+
+.evidence-selected {
+  color: #86efac !important;
+}
+
+.evidence-preview {
+  display: block;
+  width: min(100%, 260px);
+  max-height: 180px;
+  margin-top: 8px;
+  border: 1px solid rgba(134, 239, 172, 0.45);
+  border-radius: 8px;
+  object-fit: cover;
 }
 
 .field small,
@@ -435,6 +532,74 @@
   border-bottom: none;
 }
 
+.operation-actions {
+  text-align: right;
+}
+
+.history-actions {
+  display: flex;
+  justify-content: flex-end;
+  gap: 6px;
+  margin-top: 8px;
+}
+
+.history-actions button {
+  border: none;
+  padding: 3px 0;
+  color: #93c5fd;
+  background: transparent;
+  font: inherit;
+  font-size: 11px;
+  cursor: pointer;
+}
+
+.history-actions button:hover,
+.history-actions button:focus-visible {
+  color: #ffffff;
+  text-decoration: underline;
+}
+
+.history-actions .delete-action {
+  color: #fca5a5;
+}
+
+.operation-details {
+  display: grid !important;
+  grid-template-columns: 1fr auto;
+  align-items: start !important;
+  padding: 12px !important;
+  border: 1px solid rgba(96, 165, 250, 0.18) !important;
+  border-radius: 10px;
+  background: rgba(37, 99, 235, 0.06);
+}
+
+.operation-details strong,
+.operation-details small {
+  display: block;
+}
+
+.operation-details small {
+  margin-top: 6px;
+  color: #94a3b8;
+}
+
+.history-totals {
+  margin: 0;
+  font-size: 12px;
+}
+
+.history-totals div {
+  display: flex;
+  justify-content: space-between;
+  gap: 18px;
+  margin-bottom: 5px;
+}
+
+.history-totals dt,
+.history-totals dd {
+  margin: 0;
+}
+
 .operation-list strong {
   display: block;
   color: #f8fafc;
@@ -445,6 +610,18 @@
   margin-top: 5px;
 }
 
+.registered-line-list {
+  margin: 6px 0 0;
+  padding-left: 16px;
+  color: #cbd5e1;
+  font-size: 12px;
+}
+
+.registered-line-list li {
+  padding: 2px 0;
+  border: none;
+}
+
 .operation-type {
   display: block;
   margin-bottom: 4px;
@@ -452,6 +629,13 @@
   font-size: 11px;
   font-weight: 700;
   text-transform: uppercase;
+}
+
+.operation-date {
+  display: block;
+  margin-bottom: 5px;
+  color: #94a3b8;
+  font-size: 11px;
 }
 
 @keyframes reveal {
@@ -479,5 +663,9 @@
   .field-row {
     grid-template-columns: 1fr;
     gap: 0;
+  }
+
+  .evidence-picker {
+    grid-template-columns: 1fr;
   }
 }

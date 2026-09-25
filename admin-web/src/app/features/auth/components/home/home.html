@@ -1,4 +1,4 @@
-<div class="home-shell" [class.sidebar-collapsed]="sidebarCollapsed()">
+<div class="home-shell" [class.sidebar-collapsed]="sidebarCollapsed()" [class.theme-light]="theme() === 'light'" [class.theme-dark]="theme() === 'dark'">
   <aside class="sidebar">
     <div class="brand-box">
       <img src="GeFiyFaIcon.png" alt="Optima logo" class="brand-logo" />
@@ -26,9 +26,18 @@
         <span class="nav-icon" aria-hidden="true">▦</span>
         <span class="nav-label">Inventario</span>
       </button>
-      <button class="nav-item">Clientes</button>
-      <button class="nav-item">Reportes</button>
-      <button class="nav-item">Configuración</button>
+      <button class="nav-item" [class.active]="activeSection() === 'clients'" (click)="showSection('clients')">
+        <span class="nav-icon" aria-hidden="true">♙</span>
+        <span class="nav-label">Clientes</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'billing'" (click)="showSection('billing')">
+        <span class="nav-icon" aria-hidden="true">▤</span>
+        <span class="nav-label">Facturación</span>
+      </button>
+      <button class="nav-item" [class.active]="activeSection() === 'settings'" (click)="showSection('settings')">
+        <span class="nav-icon" aria-hidden="true">⚙</span>
+        <span class="nav-label">Configuración</span>
+      </button>
     </nav>
   </aside>
 
@@ -139,8 +148,14 @@
     </section>
     } @else if (activeSection() === 'operations') {
       <app-operation-register (back)="showSection('dashboard')" />
-    } @else {
+    } @else if (activeSection() === 'inventory') {
       <app-inventory />
+    } @else if (activeSection() === 'clients') {
+      <app-clients />
+    } @else if (activeSection() === 'billing') {
+      <app-billing />
+    } @else {
+      <app-settings [theme]="theme()" (themeChange)="selectTheme($event)" />
     }
   </main>
 </div>

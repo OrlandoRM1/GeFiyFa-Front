@@ -3,6 +3,12 @@
     <img src="GeFiyFaIcon.png" alt="Logo Optima" class="register-logo" />
     <h1>Crear cuenta</h1>
     <p class="register-subtitle">Registra un nuevo usuario para acceder al sistema.</p>
+    @if (fromBilling() && billingInvoice()) {
+      <div class="billing-invite" role="status">
+        <strong>Compra lista para facturar</strong>
+        <span>Tu registro quedará asociado al folio {{ billingInvoice() }}.</span>
+      </div>
+    }
   </div>
 
   <form (ngSubmit)="onSubmit()" #registerForm="ngForm" class="register-form">

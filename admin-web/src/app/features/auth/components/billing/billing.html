@@ -1,0 +1,70 @@
+<section class="billing-view" aria-labelledby="billing-title">
+  <header class="billing-heading">
+    <div>
+      <p class="eyebrow">Control fiscal y cobranza</p>
+      <h1 id="billing-title">Facturación</h1>
+      <p class="intro">Consulta, crea y da seguimiento a las facturas de tu negocio.</p>
+    </div>
+    <div class="heading-actions">
+      <button class="secondary-btn" type="button" (click)="showCustomerQr()">QR para cliente</button>
+      <button class="primary-btn" type="button" (click)="toggleForm()">{{ showForm() ? 'Cerrar formulario' : '+ Nueva factura' }}</button>
+    </div>
+  </header>
+
+  @if (message()) { <p class="billing-message" role="status">{{ message() }}</p> }
+
+  <section class="billing-stats" aria-label="Resumen de facturación">
+    <article><span>Facturas visibles</span><strong>{{ filteredInvoices().length }}</strong></article>
+    <article><span>Por cobrar</span><strong>${{ pendingTotal() | number: '1.2-2' }}</strong></article>
+    <article><span>IVA aplicado</span><strong>16%</strong></article>
+  </section>
+
+  @if (showForm()) {
+    <form class="billing-form" [formGroup]="invoiceForm" (ngSubmit)="createInvoice()" novalidate>
+      <div class="form-heading"><div><h2>Crear factura</h2><p>Captura los datos iniciales; los conceptos pueden integrarse desde Operaciones.</p></div></div>
+      <div class="form-grid">
+        <label class="field"><span>Cliente o razón social <b>*</b></span><input formControlName="client" placeholder="Ej. Comercializadora Norte" /></label>
+        <label class="field"><span>Subtotal <b>*</b></span><input type="number" formControlName="subtotal" min="0.01" step="0.01" /></label>
+        <label class="field"><span>Estado</span><select formControlName="status"><option value="Pendiente">Pendiente</option><option value="Pagada">Pagada</option><option value="Cancelada">Cancelada</option></select></label>
+      </div>
+      <div class="invoice-preview"><span>IVA (16%)</span><strong>${{ (invoiceForm.controls.subtotal.value * 0.16) | number: '1.2-2' }}</strong><span>Total</span><strong>${{ (invoiceForm.controls.subtotal.value * 1.16) | number: '1.2-2' }}</strong></div>
+      <div class="form-actions"><button class="secondary-btn" type="button" (click)="toggleForm()">Cancelar</button><button class="primary-btn" type="submit">Crear factura</button></div>
+    </form>
+  }
+
+  @if (showQr()) {
+    <section class="qr-panel" aria-labelledby="qr-title">
+      <div class="qr-copy">
+        <p class="eyebrow">Registro de cliente</p>
+        <h2 id="qr-title">Comparte este QR para facturar</h2>
+        <p>El cliente escanea el código, crea su cuenta y conserva el folio de la compra.</p>
+        @if (qrInvoice(); as invoice) {
+          <div class="qr-invoice"><span>Factura asociada</span><strong>{{ invoice.folio }} · ${{ invoice.total | number: '1.2-2' }}</strong></div>
+        }
+        <label class="qr-link-field"><span>Enlace de registro</span><input [value]="qrLink()" readonly /></label>
+        @if (qrMessage()) { <p class="billing-message" role="status">{{ qrMessage() }}</p> }
+        <div class="form-actions qr-actions">
+          <button class="secondary-btn" type="button" (click)="copyCustomerLink()">Copiar enlace</button>
+          <button class="primary-btn" type="button" (click)="downloadCustomerQr()">Descargar QR</button>
+          <button class="text-btn" type="button" (click)="closeCustomerQr()">Cerrar</button>
+        </div>
+      </div>
+      <div class="qr-code" aria-label="Código QR para registro del cliente">
+        @if (qrDataUrl()) { <img [src]="qrDataUrl()" alt="Código QR de registro de cliente" /> }
+        @else { <span>Generando QR...</span> }
+      </div>
+    </section>
+  }
+
+  <section class="invoice-panel" aria-label="Listado de facturas">
+    <div class="billing-toolbar">
+      <label class="search-field"><span class="sr-only">Buscar factura</span><input type="search" placeholder="Buscar por folio o cliente" (input)="updateSearch($event)" /></label>
+      <label class="filter-field"><span class="sr-only">Filtrar estado</span><select (change)="updateStatus($event)"><option value="Todas">Todos los estados</option><option value="Pagada">Pagadas</option><option value="Pendiente">Pendientes</option><option value="Cancelada">Canceladas</option></select></label>
+    </div>
+    <div class="table-wrap"><table><thead><tr><th>Factura</th><th>Cliente</th><th>Fecha</th><th>Estado</th><th>Subtotal</th><th>Total</th><th>Acción</th></tr></thead><tbody>
+      @for (invoice of filteredInvoices(); track invoice.folio) {
+        <tr><td><strong>{{ invoice.folio }}</strong></td><td>{{ invoice.client }}</td><td>{{ invoice.date }}</td><td><span class="status-badge" [class.paid]="invoice.status === 'Pagada'" [class.cancelled]="invoice.status === 'Cancelada'">{{ invoice.status }}</span></td><td>${{ invoice.subtotal | number: '1.2-2' }}</td><td><strong>${{ invoice.total | number: '1.2-2' }}</strong></td><td><button class="table-action" type="button" (click)="showCustomerQr(invoice)">Generar QR</button></td></tr>
+      } @empty { <tr><td class="empty-table" colspan="7">No hay facturas que coincidan con la búsqueda.</td></tr> }
+    </tbody></table></div>
+  </section>
+</section>

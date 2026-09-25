@@ -55,6 +55,23 @@
   font-size: 14px;
 }
 
+.billing-invite {
+  display: grid;
+  gap: 4px;
+  margin-top: 16px;
+  padding: 12px 14px;
+  border: 1px solid #bfdbfe;
+  border-radius: 12px;
+  background: #eff6ff;
+  color: #1e3a8a;
+  font-size: 13px;
+  text-align: left;
+}
+
+.billing-invite strong {
+  color: #1d4ed8;
+}
+
 .register-form {
   display: flex;
   flex-direction: column;

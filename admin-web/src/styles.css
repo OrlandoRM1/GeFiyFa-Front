@@ -1,1 +1,190 @@
 /* You can add global styles to this file, and also import other style files */
+
+body.theme-light app-operation-register,
+body.theme-light app-inventory {
+	color: #334155;
+}
+
+body.theme-light .home-shell {
+	color: #334155;
+}
+
+body.theme-light .operation-heading h1,
+body.theme-light .inventory-heading h1,
+body.theme-light .settings-heading h1,
+body.theme-light .intro,
+body.theme-light .settings-intro,
+body.theme-light .eyebrow,
+body.theme-light .form-heading p,
+body.theme-light .required-note,
+body.theme-light .empty-state,
+body.theme-light .operation-list small,
+body.theme-light .field small,
+body.theme-light .inventory-count,
+body.theme-light .low-stock-count,
+body.theme-light th,
+body.theme-light td small {
+	color: #475569;
+}
+
+body.theme-light .operation-form,
+body.theme-light .summary-panel,
+body.theme-light .inventory-form,
+body.theme-light .inventory-panel {
+	border-color: #cbd5e1;
+	background: #ffffff;
+	box-shadow: 0 10px 24px rgba(15, 23, 42, 0.06);
+}
+
+body.theme-light .operation-heading h1,
+body.theme-light .inventory-heading h1,
+body.theme-light .form-section h2,
+body.theme-light .summary-panel h2,
+body.theme-light .form-heading h2,
+body.theme-light .cart-heading h3,
+body.theme-light .cart-list strong,
+body.theme-light td strong {
+	color: #172033;
+}
+
+body.theme-light .field,
+body.theme-light td,
+body.theme-light .cart-list small {
+	color: #475569;
+}
+
+body.theme-light .form-section h2,
+body.theme-light .summary-panel h2,
+body.theme-light .cart-heading h3,
+body.theme-light .cart-list strong,
+body.theme-light .operation-list strong,
+body.theme-light .inventory-panel td strong {
+	color: #172033;
+}
+
+body.theme-light .field input,
+body.theme-light .field select,
+body.theme-light .field textarea,
+body.theme-light .search-field input,
+body.theme-light .filter-field select {
+	border-color: #cbd5e1;
+	color: #172033;
+	background: #f8fafc;
+}
+
+body.theme-light .field select option {
+	color: #172033;
+	background: #ffffff;
+}
+
+body.theme-light .secondary-btn {
+	border-color: #94a3b8;
+	color: #334155;
+	background: #ffffff;
+}
+
+body.theme-light .type-switch label {
+	border-color: #cbd5e1;
+	color: #475569;
+}
+
+body.theme-light .type-switch label.selected {
+	border-color: #2563eb;
+	color: #172033;
+	background: #dbeafe;
+}
+
+body.theme-light .add-product-btn {
+	border-color: #2563eb;
+	color: #1d4ed8;
+	background: #eff6ff;
+}
+
+body.theme-light .form-message.success,
+body.theme-light .inventory-message {
+	color: #166534;
+}
+
+body.theme-light .error,
+body.theme-light .stock-message {
+	color: #b91c1c !important;
+}
+
+body.theme-light app-operation-register .operation-heading h1,
+body.theme-light app-operation-register .form-section h2,
+body.theme-light app-operation-register .summary-panel h2,
+body.theme-light app-operation-register .cart-heading h3,
+body.theme-light app-operation-register .cart-list strong,
+body.theme-light app-operation-register .operation-list strong,
+body.theme-light app-inventory .inventory-heading h1,
+body.theme-light app-inventory .form-heading h2,
+body.theme-light app-inventory .inventory-panel td strong {
+	color: #172033 !important;
+}
+
+body.theme-light app-operation-register .intro,
+body.theme-light app-operation-register .eyebrow,
+body.theme-light app-operation-register .field,
+body.theme-light app-operation-register .field em,
+body.theme-light app-operation-register .field small,
+body.theme-light app-operation-register .empty-state,
+body.theme-light app-operation-register .operation-list small,
+body.theme-light app-operation-register .cart-list small,
+body.theme-light app-inventory .intro,
+body.theme-light app-inventory .eyebrow,
+body.theme-light app-inventory .form-heading p,
+body.theme-light app-inventory .required-note,
+body.theme-light app-inventory .field,
+body.theme-light app-inventory .inventory-count,
+body.theme-light app-inventory .low-stock-count,
+body.theme-light app-inventory th,
+body.theme-light app-inventory td,
+body.theme-light app-inventory td small,
+body.theme-light app-inventory .empty-table {
+	color: #475569 !important;
+}
+
+body.theme-light app-operation-register .field input,
+body.theme-light app-operation-register .field select,
+body.theme-light app-operation-register .field textarea,
+body.theme-light app-inventory .field input,
+body.theme-light app-inventory .field select,
+body.theme-light app-inventory .search-field input,
+body.theme-light app-inventory .filter-field select {
+	color: #172033 !important;
+	background: #ffffff !important;
+}
+
+body.theme-light app-operation-register .field input::placeholder,
+body.theme-light app-operation-register .field textarea::placeholder,
+body.theme-light app-inventory input::placeholder {
+	color: #64748b !important;
+	opacity: 1;
+}
+
+body.theme-light app-operation-register .secondary-btn,
+body.theme-light app-operation-register .remove-btn,
+body.theme-light app-inventory .secondary-btn {
+	color: #334155 !important;
+}
+
+body.theme-light app-settings .settings-tabs {
+	border-color: #cbd5e1;
+}
+
+body.theme-light app-settings .settings-tabs button {
+	color: #475569 !important;
+}
+
+body.theme-light app-settings .settings-tabs button.active,
+body.theme-light app-settings .settings-tabs button:hover,
+body.theme-light app-settings .settings-tabs button:focus-visible {
+	border-color: #2563eb;
+	color: #1d4ed8 !important;
+}
+
+body.theme-light .cart-section,
+body.theme-light .inventory-toolbar {
+	border-color: #bfdbfe;
+	background: #eff6ff;
+}

@@ -23,10 +23,21 @@
           </label>
         </div>
 
-        <label class="field">
-          <span>Buscar producto en inventario <b>*</b></span>
-          <div class="product-search">
-            <input type="search" formControlName="product" placeholder="Busca por nombre o código" autocomplete="off" (input)="searchProducts($event)" aria-label="Buscar producto en inventario" />
+        <div class="field-row product-fields">
+          <label class="field">
+            <span>Código del producto</span>
+            <div class="product-search">
+              <input type="search" formControlName="code" placeholder="Ej. ABR-001" autocomplete="off" (input)="searchProductsByCode($event)" aria-label="Código del producto" />
+            </div>
+          </label>
+          <label class="field">
+            <span>Nombre del producto</span>
+            <div class="product-search">
+              <input type="search" formControlName="product" placeholder="Ej. Arroz blanco" autocomplete="off" (input)="searchProducts($event)" aria-label="Nombre del producto" />
+            </div>
+          </label>
+        </div>
+        <div class="product-results-wrapper">
             @if (matchingProducts().length > 0 && !selectedProduct()) {
               <ul class="product-results" aria-label="Resultados del inventario">
                 @for (product of matchingProducts(); track product.code) {
@@ -42,14 +53,30 @@
                 }
               </ul>
             }
-          </div>
-          @if (productSearch().trim().length >= 2 && matchingProducts().length === 0 && !selectedProduct()) {
-            <small>No encontramos coincidencias. Puedes capturar el producto manualmente.</small>
-          }
-          @if (form.controls.product.touched && form.controls.product.invalid) {
-            <small class="error">Indica el producto o servicio.</small>
-          }
-        </label>
+        </div>
+        @if (productSearch().trim().length >= 2 && matchingProducts().length === 0 && !selectedProduct()) {
+          <small>No encontramos coincidencias. Puedes ingresar el código o nombre manualmente.</small>
+        }
+        @if (!form.controls.product.value.trim() && !form.controls.code.value.trim() && (form.controls.product.touched || form.controls.code.touched)) {
+          <small class="error">Ingresa el código o el nombre del producto.</small>
+        }
+
+        <div class="field-row">
+          <label class="field">
+            <span>Tipo de artículo <b>*</b></span>
+            <select formControlName="kind">
+              <option value="Producto">Producto</option>
+              <option value="Materia prima">Materia prima</option>
+            </select>
+          </label>
+          <label class="field">
+            <span>Categoría <b>*</b></span>
+            <input type="text" formControlName="category" placeholder="Ej. Abarrotes, bebidas o insumos" />
+            @if (form.controls.category.touched && form.controls.category.invalid) {
+              <small class="error">Indica la categoría.</small>
+            }
+          </label>
+        </div>
 
         <label class="field">
           <span>Características <b>*</b></span>
@@ -90,7 +117,7 @@
                 <li>
                   <div>
                     <strong>{{ line.product }}</strong>
-                    <small>{{ line.units }} x ${{ line.price | number: '1.2-2' }}</small>
+                    <small>{{ line.kind }} · {{ line.category }} · {{ line.units }} x ${{ line.price | number: '1.2-2' }}</small>
                   </div>
                   <div class="cart-line-total">
                     <strong>${{ line.total | number: '1.2-2' }}</strong>
@@ -109,8 +136,28 @@
 
         <label class="field">
           <span>Evidencia <em>(opcional)</em></span>
-          <input type="file" accept="image/*,.pdf" (change)="onEvidenceSelected($event)" />
-          <small>Adjunta una imagen o PDF si necesitas respaldar el registro.</small>
+          <div class="evidence-picker">
+            <label class="evidence-option">
+              <span>Subir archivo</span>
+              <input type="file" accept="image/*,.pdf" (change)="onEvidenceSelected($event)" />
+            </label>
+            <button class="evidence-option evidence-camera-button" type="button" (click)="openCamera()">Tomar foto con cámara</button>
+          </div>
+          @if (cameraOpen()) {
+            <div class="camera-panel">
+              <video #cameraVideo autoplay playsinline muted aria-label="Vista previa de la cámara"></video>
+              <div class="camera-actions">
+                <button class="primary-btn" type="button" (click)="takePhoto()">Tomar foto</button>
+                <button class="secondary-btn" type="button" (click)="closeCamera()">Cancelar</button>
+              </div>
+            </div>
+          }
+          @if (cameraError()) { <small class="error">{{ cameraError() }}</small> }
+          @if (evidenceMessage()) { <small class="evidence-selected">{{ evidenceMessage() }}</small> }
+          @if (evidencePreviewUrl()) {
+            <img class="evidence-preview" [src]="evidencePreviewUrl()" alt="Vista previa de la evidencia" />
+          }
+          <small>Elige una imagen o PDF existente, o toma una fotografía con la cámara del dispositivo.</small>
         </label>
       </div>
 
@@ -135,11 +182,34 @@
             <li>
               <div>
                 <span class="operation-type">{{ operation.type }}</span>
+                <time class="operation-date">{{ operation.createdAt }}</time>
                 <strong>{{ operation.lines.length }} producto(s)</strong>
+                <ul class="registered-line-list">
+                  @for (line of operation.lines; track $index) {
+                    <li>{{ line.product }} · {{ line.units }} unidad(es)</li>
+                  }
+                </ul>
                 <small>Subtotal: ${{ operation.subtotal | number: '1.2-2' }}</small>
               </div>
-              <strong>${{ operation.total | number: '1.2-2' }}</strong>
+              <div class="operation-actions">
+                <strong>${{ operation.total | number: '1.2-2' }}</strong>
+                <div class="history-actions">
+                  <button type="button" (click)="toggleOperationDetails($index)">{{ expandedOperationIndex() === $index ? 'Ocultar' : 'Ver detalle' }}</button>
+                  <button type="button" (click)="editOperation($index)">Editar</button>
+                  <button type="button" class="delete-action" (click)="deleteOperation($index)">Eliminar</button>
+                </div>
+              </div>
             </li>
+            @if (expandedOperationIndex() === $index) {
+              <li class="operation-details">
+                <div><strong>Desglose de {{ operation.type.toLowerCase() }}</strong>
+                  @for (line of operation.lines; track $index) {
+                    <small>{{ line.product }} · {{ line.kind }} · {{ line.category }} · {{ line.units }} x ${{ line.price | number: '1.2-2' }} = ${{ line.total | number: '1.2-2' }}</small>
+                  }
+                </div>
+                <dl class="history-totals"><div><dt>Subtotal</dt><dd>${{ operation.subtotal | number: '1.2-2' }}</dd></div><div><dt>IVA</dt><dd>${{ operation.tax | number: '1.2-2' }}</dd></div><div><dt>Total</dt><dd>${{ operation.total | number: '1.2-2' }}</dd></div></dl>
+              </li>
+            }
           }
         </ul>
       }

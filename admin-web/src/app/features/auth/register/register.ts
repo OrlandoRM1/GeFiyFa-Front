@@ -1,7 +1,7 @@
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Component, inject, signal } from '@angular/core';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterLink } from '@angular/router';
+import { ActivatedRoute, Router, RouterLink } from '@angular/router';
 import { TimeoutError, finalize, timeout } from 'rxjs';
 
 interface UserRegisterRequest {
@@ -30,6 +30,10 @@ interface RegisterResponse {
 export class Register {
   private http = inject(HttpClient);
   private router = inject(Router);
+  private readonly route = inject(ActivatedRoute);
+
+  protected readonly billingInvoice = signal(this.route.snapshot.queryParamMap.get('invoice') ?? '');
+  protected readonly fromBilling = signal(this.route.snapshot.queryParamMap.get('source') === 'billing');
 
   name = signal('');
   lastName = signal('');

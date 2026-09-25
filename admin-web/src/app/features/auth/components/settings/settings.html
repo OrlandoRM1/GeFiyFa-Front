@@ -1,0 +1,66 @@
+<section class="settings-view" aria-labelledby="settings-title">
+  <header class="settings-heading">
+    <div>
+      <p class="eyebrow">Administración multiempresa</p>
+      <h1 id="settings-title">Configuración</h1>
+      <p class="settings-intro">Administra la empresa, los usuarios y el acceso a cada módulo.</p>
+    </div>
+  </header>
+
+  <nav class="settings-tabs" aria-label="Secciones de configuración">
+    <button type="button" [class.active]="activeTab() === 'company'" (click)="selectTab('company')">Empresa</button>
+    <button type="button" [class.active]="activeTab() === 'users'" (click)="selectTab('users')">Usuarios</button>
+    <button type="button" [class.active]="activeTab() === 'profiles'" (click)="selectTab('profiles')">Perfiles y permisos</button>
+    <button type="button" [class.active]="activeTab() === 'appearance'" (click)="selectTab('appearance')">Apariencia</button>
+  </nav>
+
+  @if (message()) { <p class="settings-message" role="status">{{ message() }}</p> }
+
+  @if (activeTab() === 'company') {
+    <form class="settings-card" [formGroup]="companyForm" (ngSubmit)="saveCompany()">
+      <div class="card-heading"><div><h2>Datos de la empresa</h2><p>Esta información identifica al negocio dentro del sistema.</p></div></div>
+      <div class="settings-grid">
+        <label class="field"><span>Nombre comercial <b>*</b></span><input formControlName="name" /></label>
+        <label class="field"><span>RFC / Identificador fiscal</span><input formControlName="taxId" /></label>
+        <label class="field"><span>Teléfono</span><input formControlName="phone" /></label>
+        <label class="field"><span>Correo de contacto <b>*</b></span><input type="email" formControlName="email" /></label>
+        <label class="field field-wide"><span>Dirección</span><input formControlName="address" /></label>
+      </div>
+      <div class="form-actions"><button class="primary-btn" type="submit">Guardar empresa</button></div>
+    </form>
+  } @else if (activeTab() === 'users') {
+    <section class="settings-card">
+      <div class="card-heading"><div><h2>Usuarios del negocio</h2><p>Invita colaboradores y asígnales un perfil de acceso.</p></div></div>
+      <form class="inline-form" [formGroup]="userForm" (ngSubmit)="addUser()">
+        <input formControlName="name" placeholder="Nombre completo" aria-label="Nombre completo" />
+        <input type="email" formControlName="email" placeholder="Correo electrónico" aria-label="Correo electrónico" />
+        <select formControlName="profile" aria-label="Perfil"><option value="Administrador">Administrador</option><option value="Ventas">Ventas</option><option value="Inventario">Inventario</option></select>
+        <button class="primary-btn" type="submit">+ Agregar usuario</button>
+      </form>
+      <div class="user-list">
+        @for (user of users(); track user.email) {
+          <article class="user-row"><div class="avatar">{{ user.name.charAt(0) }}</div><div><strong>{{ user.name }}</strong><small>{{ user.email }}</small></div><span class="profile-badge">{{ user.profile }}</span><span class="status-badge" [class.pending]="user.status === 'Pendiente'">{{ user.status }}</span></article>
+        }
+      </div>
+    </section>
+  } @else if (activeTab() === 'profiles') {
+    <div class="profiles-layout">
+      <section class="settings-card">
+        <div class="card-heading"><div><h2>Perfiles</h2><p>Un perfil define los módulos disponibles para un usuario.</p></div></div>
+        <div class="profile-list">
+          @for (profile of profiles(); track profile.name) {
+            <article class="profile-row"><strong>{{ profile.name }}</strong><small>{{ profile.description }}</small><span>{{ profile.modules.length }} módulos habilitados</span></article>
+          }
+        </div>
+        <form class="profile-form" [formGroup]="profileForm" (ngSubmit)="addProfile()"><input formControlName="name" placeholder="Nombre del nuevo perfil" /><input formControlName="description" placeholder="Descripción" /><button class="primary-btn" type="submit">Crear perfil</button></form>
+      </section>
+      <section class="settings-card permissions-card"><div class="card-heading"><div><h2>Permisos de módulos</h2><p>Selecciona los módulos del nuevo perfil.</p></div></div><div class="module-list">@for (module of modules; track module) {<label><input type="checkbox" [checked]="selectedModules().includes(module)" (change)="toggleModule(module)" />{{ module }}</label>}</div></section>
+    </div>
+  } @else {
+    <section class="settings-card appearance-card"><div class="card-heading"><div><h2>Preferencia visual</h2><p>Elige el tema para tu sesión de trabajo.</p></div></div><div class="theme-options" role="radiogroup" aria-label="Tema de la interfaz">
+      <button class="theme-option theme-option-official" type="button" role="radio" [attr.aria-checked]="theme() === 'official'" [class.selected]="theme() === 'official'" (click)="changeTheme('official')"><span class="theme-preview" aria-hidden="true"><i></i><b></b><em></em></span><strong>Oficial</strong><small>La apariencia actual de Optima</small></button>
+      <button class="theme-option theme-option-dark" type="button" role="radio" [attr.aria-checked]="theme() === 'dark'" [class.selected]="theme() === 'dark'" (click)="changeTheme('dark')"><span class="theme-preview" aria-hidden="true"><i></i><b></b><em></em></span><strong>Oscuro</strong><small>Contraste bajo para trabajar de noche</small></button>
+      <button class="theme-option theme-option-light" type="button" role="radio" [attr.aria-checked]="theme() === 'light'" [class.selected]="theme() === 'light'" (click)="changeTheme('light')"><span class="theme-preview" aria-hidden="true"><i></i><b></b><em></em></span><strong>Claro</strong><small>Fondo blanco y mayor luminosidad</small></button>
+    </div></section>
+  }
+</section>

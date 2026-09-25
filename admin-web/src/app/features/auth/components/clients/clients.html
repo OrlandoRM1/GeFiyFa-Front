@@ -1,0 +1,73 @@
+<section class="clients-view" aria-labelledby="clients-title">
+  <header class="clients-heading">
+    <div>
+      <p class="eyebrow">Relaciones comerciales</p>
+      <h1 id="clients-title">Clientes</h1>
+      <p class="intro">Administra los contactos que reciben tus facturas y da seguimiento a su actividad.</p>
+    </div>
+    <button class="primary-btn" type="button" (click)="toggleForm()">
+      {{ showForm() ? 'Cerrar formulario' : '+ Nuevo cliente' }}
+    </button>
+  </header>
+
+  @if (message()) { <p class="clients-message" role="status">{{ message() }}</p> }
+
+  <section class="clients-stats" aria-label="Resumen de clientes">
+    <article><span>Clientes registrados</span><strong>{{ clients().length }}</strong></article>
+    <article><span>Clientes activos</span><strong>{{ activeClients() }}</strong></article>
+    <article><span>Compras acumuladas</span><strong>${{ totalPurchases() | number: '1.2-2' }}</strong></article>
+  </section>
+
+  @if (showForm()) {
+    <form class="client-form" [formGroup]="clientForm" (ngSubmit)="saveClient()" novalidate>
+      <div class="form-heading">
+        <div><h2>{{ editingClientId() ? 'Editar cliente' : 'Registrar cliente' }}</h2><p>Guarda los datos que usarás para emitir facturas.</p></div>
+        <span class="required-note">* Campos obligatorios</span>
+      </div>
+      <div class="form-grid">
+        <label class="field"><span>Nombre de contacto <b>*</b></span><input formControlName="name" placeholder="Ej. Mariana López" /></label>
+        <label class="field"><span>Empresa o razón social <b>*</b></span><input formControlName="company" placeholder="Ej. Comercializadora Norte" /></label>
+        <label class="field"><span>Correo electrónico <b>*</b></span><input type="email" formControlName="email" placeholder="cliente@empresa.mx" /></label>
+        <label class="field"><span>Teléfono <b>*</b></span><input type="tel" formControlName="phone" placeholder="55 0000 0000" /></label>
+        <label class="field"><span>Estado</span><select formControlName="status"><option value="Activo">Activo</option><option value="Inactivo">Inactivo</option></select></label>
+      </div>
+      <div class="form-actions"><button class="secondary-btn" type="button" (click)="toggleForm()">Cancelar</button><button class="primary-btn" type="submit">{{ editingClientId() ? 'Guardar cambios' : 'Guardar cliente' }}</button></div>
+    </form>
+  }
+
+  @if (selectedClient(); as client) {
+    <section class="client-detail" aria-labelledby="client-detail-title">
+      <div class="detail-heading">
+        <div><p class="eyebrow">Ficha de cliente</p><h2 id="client-detail-title">{{ client.name }}</h2><p>{{ client.company }} · {{ client.id }}</p></div>
+        <button class="close-btn" type="button" aria-label="Cerrar ficha del cliente" (click)="closeClient()">×</button>
+      </div>
+      <div class="detail-grid">
+        <div><span>Correo electrónico</span><strong>{{ client.email }}</strong></div>
+        <div><span>Teléfono</span><strong>{{ client.phone }}</strong></div>
+        <div><span>Compras acumuladas</span><strong>${{ client.purchases | number: '1.2-2' }}</strong></div>
+        <div><span>Estado</span><strong>{{ client.status }}</strong></div>
+      </div>
+      <div class="detail-actions"><button class="primary-btn" type="button" (click)="editClient(client)">Editar datos</button></div>
+    </section>
+  }
+
+  <section class="clients-panel" aria-label="Listado de clientes">
+    <div class="clients-toolbar">
+      <label class="search-field"><span class="sr-only">Buscar cliente</span><input type="search" placeholder="Buscar por nombre, empresa o correo" (input)="updateSearch($event)" /></label>
+      <label class="filter-field"><span class="sr-only">Filtrar estado</span><select (change)="updateStatus($event)"><option value="Todos">Todos los clientes</option><option value="Activo">Activos</option><option value="Inactivo">Inactivos</option></select></label>
+      <div class="visible-count"><strong>{{ filteredClients().length }}</strong> visibles</div>
+    </div>
+
+    <div class="table-wrap"><table><thead><tr><th>Cliente</th><th>Contacto</th><th>Compras</th><th>Estado</th><th>Acción</th></tr></thead><tbody>
+      @for (client of filteredClients(); track client.id) {
+        <tr>
+          <td><strong>{{ client.name }}</strong><small>{{ client.id }} · {{ client.company }}</small></td>
+          <td><span>{{ client.email }}</span><small>{{ client.phone }}</small></td>
+          <td><strong>${{ client.purchases | number: '1.2-2' }}</strong></td>
+          <td><span class="status-badge" [class.inactive]="client.status === 'Inactivo'">{{ client.status }}</span></td>
+          <td><button class="table-action" type="button" (click)="openClient(client)">Ver ficha</button></td>
+        </tr>
+      } @empty { <tr><td class="empty-table" colspan="5">No hay clientes que coincidan con la búsqueda.</td></tr> }
+    </tbody></table></div>
+  </section>
+</section>
